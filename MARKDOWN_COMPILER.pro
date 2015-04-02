@@ -13,8 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    select_path.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    select_path.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    select_path.ui

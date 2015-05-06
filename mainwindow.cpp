@@ -1,6 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "fileexplorerwidget.h"
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QFileIconProvider>
+#include <QIcon>
+#include <QFileInfo>
+#include <QTextBlock>
+#include <QPainter>
+#include <QDebug>
+#include <QThread>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -8,16 +16,28 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    FileExplorerWidget *ss;
-
-    ss = new FileExplorerWidget();
-    ss->show();
-   // ui->centralWidget->setContentsMargins(-10,-8,-8,-8);
-
+    flag=0;
+    //ui->action->setCheckable(false);
+    connect(ui->action,SIGNAL(triggered()),this,SLOT(fileOpen()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::fileOpen()
+{
+
+    QThread *p;
+    p = new QThread();
+    p->start();
+    for(int i=0;i<5;i++)
+    {
+        qDebug() <<flag;
+    }
+    flag++;
+    p->exit();
+}
+
 

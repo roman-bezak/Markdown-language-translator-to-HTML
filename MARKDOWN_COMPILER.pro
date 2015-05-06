@@ -14,10 +14,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    fileexplorerwidget.cpp
+    mdeditor.cpp
 
 HEADERS  += mainwindow.h \
-    fileexplorerwidget.h
+    mdeditor.h
 
-FORMS    += mainwindow.ui \
-    fileexplorerwidget.ui
+FORMS    += mainwindow.ui

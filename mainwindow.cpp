@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     flag=0;
-    //ui->action->setCheckable(false);
+
     connect(ui->action,SIGNAL(triggered()),this,SLOT(fileOpen()));
 }
 
@@ -29,15 +29,37 @@ MainWindow::~MainWindow()
 void MainWindow::fileOpen()
 {
 
-    QThread *p;
-    p = new QThread();
-    p->start();
-    for(int i=0;i<5;i++)
-    {
-        qDebug() <<flag;
+    if (maybeSave()) {
+        QString name = QFileDialog::getOpenFileName(this, tr("Open File..."),
+                                                    QString(), tr("Markdown Files (*.markdown *.md);;All Files (*)"));
+        if (!name.isEmpty()) {
+            load(name);
+        }
     }
-    flag++;
-    p->exit();
 }
+
+bool MainWindow::maybeSave()
+{
+    if (!ui->plainTextEdit->document()->isModified())
+        return true;
+
+    if (fileName.startsWith(QLatin1String(":/")))
+        return true;
+
+    QMessageBox::StandardButton ret;
+    ret = QMessageBox::warning(this, tr("Save Changes"),
+                               tr("The document has been modified.<br>"
+                                  "Do you want to save your changes?"),
+                               QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+    if (ret == QMessageBox::Save)
+        return fileSave();
+    else if (ret == QMessageBox::Cancel)
+        return false;
+
+    return true;
+}
+
+
 
 

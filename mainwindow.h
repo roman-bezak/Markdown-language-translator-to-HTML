@@ -15,19 +15,25 @@ class MainWindow : public QMainWindow
 
 public:
 
-    explicit MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = 0);
 
     ~MainWindow();
-    int flag;
+
 
 
 private slots:
 
     void fileOpen();
+    bool load(const QString &fileName);
 
 private:
 
+    bool maybeSave();
+    void setFileName(const QString &fileName);
+
+
     Ui::MainWindow *ui;
+    QString fileName;
 
 };
 

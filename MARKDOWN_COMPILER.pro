@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webkitwidgets
+QT       += core gui webkitwidgets printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,6 +17,9 @@ SOURCES += main.cpp\
     mdeditor.cpp
 
 HEADERS  += mainwindow.h \
-    mdeditor.h
+    mdeditor.h \
+    htmlpreviewgenerator.h \
+    markdownconverter.h \
+    template.h
 
 FORMS    += mainwindow.ui

@@ -24,6 +24,10 @@ public:
 private slots:
 
     void fileOpen();
+    void fileNew();
+    bool fileSave();
+    bool fileSaveAs();
+    void filePrint();
     bool load(const QString &fileName);
 
 private:
@@ -34,6 +38,8 @@ private:
 
     Ui::MainWindow *ui;
     QString fileName;
+    HtmlPreviewGenerator* generator;
+    HtmlHighlighter *htmlHighlighter;
 
 };
 

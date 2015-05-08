@@ -6,9 +6,12 @@
 #include <QIcon>
 #include <QFileInfo>
 #include <QTextBlock>
-#include <QPainter>
 #include <QDebug>
 #include <QThread>
+#include <QTextDocumentWriter>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QPrintPreviewDialog>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -18,7 +21,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
 
-    connect(ui->action,SIGNAL(triggered()),this,SLOT(fileOpen()));
+    connect(ui->file_new,SIGNAL(triggered()),this,SLOT(fileNew()));
+    connect(ui->file_open,SIGNAL(triggered()),this,SLOT(fileOpen()));
+    connect(ui->file_save,SIGNAL(triggered()),this,SLOT(fileSave()));
+    connect(ui->file_save_as,SIGNAL(triggered()),this,SLOT(fileSaveAs()));
+    connect(ui->file_print,SIGNAL(triggered()),this,SLOT(filePrint()));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -37,7 +46,67 @@ void MainWindow::fileOpen()
         }
     }
 }
+void MainWindow::fileNew()
+{
+    if (maybeSave())
+    {
+        //wordCountLabel->setText("");
+        //wordCountLabel->setToolTip("");
+        ui->plainTextEdit->clear();
+       //ui->plainTextEdit->resetHighlighting();
+        ui->webView->setHtml(QString());
+        //ui->htmlSourceTextEdit->clear();
+        setFileName(QString());
+    }
+}
+bool MainWindow::fileSave()
+{
+    // файл  без имени
+    if (fileName.isEmpty()) {
+        return fileSaveAs();
+    }
 
+    QTextDocumentWriter writer(fileName, "plaintext");
+    bool success = writer.write(ui->plainTextEdit->document());
+
+    if (success)
+    {
+        ui->plainTextEdit->document()->setModified(false);
+        setWindowModified(false);
+    }
+
+    return success;
+}
+bool MainWindow::fileSaveAs()
+{
+    QString name = QFileDialog::getSaveFileName(this, tr("Save as..."), QString(),
+                                              tr("Markdown Files (*.markdown *.md);;All Files (*)"));
+    if (name.isEmpty()) {
+        return false;
+    }
+
+    //к файлам без расширения по дефолту добавляем расширение (.md)
+    if (QFileInfo(name).suffix().isEmpty()) {
+        name.append(".md");
+    }
+
+    setFileName(name);
+    return fileSave();
+}
+void MainWindow::filePrint()
+{
+    QPrinter printer;
+    QPrintDialog *dlg = new QPrintDialog(&printer, this);
+    dlg->setWindowTitle(tr("Print Document"));
+
+    if (ui->webView->hasSelection())
+        dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
+
+    if (dlg->exec() == QDialog::Accepted)
+        ui->webView->print(&printer);
+
+    delete dlg;
+}
 bool MainWindow::load(const QString &fileName)
 {
     if (!QFile::exists(fileName)) {
@@ -54,6 +123,7 @@ bool MainWindow::load(const QString &fileName)
     QString text = QString::fromUtf8(content);
 
     //ui->plainTextEdit->resetHighlighting();//Error
+
     //добавляе на виджет текст
     ui->plainTextEdit->setPlainText(text);
 
@@ -62,7 +132,6 @@ bool MainWindow::load(const QString &fileName)
 
     return true;
 }
-
 void MainWindow::setFileName(const QString &fileName)
 {
     this->fileName = fileName;
@@ -80,9 +149,6 @@ void MainWindow::setFileName(const QString &fileName)
 
     setWindowFilePath(shownName);                   //fix
 }
-
-
-
 bool MainWindow::maybeSave()
 {
     if (!ui->plainTextEdit->document()->isModified())
@@ -92,6 +158,7 @@ bool MainWindow::maybeSave()
         return true;
 
     QMessageBox::StandardButton ret;
+
     ret = QMessageBox::warning(this, tr("Save Changes"),
 
                                tr("The document has been modified.<br>"
@@ -100,7 +167,7 @@ bool MainWindow::maybeSave()
                                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
     if (ret == QMessageBox::Save)
-        return true;            //will be fixed ...fileSave();
+        return fileSave();
     else if (ret == QMessageBox::Cancel)
         return false;
 

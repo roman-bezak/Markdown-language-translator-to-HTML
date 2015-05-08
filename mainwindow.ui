@@ -129,7 +129,12 @@
      <string>Файл</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="action"/>
+    <addaction name="file_new"/>
+    <addaction name="file_open"/>
+    <addaction name="file_save"/>
+    <addaction name="file_save_as"/>
+    <addaction name="file_print"/>
+    <addaction name="file_exit"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -158,12 +163,60 @@
    <addaction name="menu_4"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="action">
+  <action name="file_open">
    <property name="text">
     <string>Открыть</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="file_new">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Новый</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="file_save">
+   <property name="text">
+    <string>Сохранить</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="file_save_as">
+   <property name="text">
+    <string>Сохранить как...</string>
+   </property>
+   <property name="toolTip">
+    <string>Сохранить как...</string>
+   </property>
+  </action>
+  <action name="file_exit">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Q</string>
+   </property>
+  </action>
+  <action name="file_print">
+   <property name="text">
+    <string>Печать</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

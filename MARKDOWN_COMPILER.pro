@@ -14,12 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    mdeditor.cpp
+    mdeditor.cpp \
+
 
 HEADERS  += mainwindow.h \
     mdeditor.h \
-    htmlpreviewgenerator.h \
-    markdownconverter.h \
-    template.h
+
 
 FORMS    += mainwindow.ui

@@ -38,8 +38,7 @@ private:
 
     Ui::MainWindow *ui;
     QString fileName;
-    HtmlPreviewGenerator* generator;
-    HtmlHighlighter *htmlHighlighter;
+
 
 };
 

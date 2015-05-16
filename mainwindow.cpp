@@ -12,21 +12,30 @@
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QPrintPreviewDialog>
-
+#include <QProcess>
+#include <QUrl>
+#include "reloadwebview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    options(new Options(this))
 {
     ui->setupUi(this);
 
+    ui->webView->load(QUrl("file:///D://result.html"));
+
+
+    //ui->plainTextEdit->setFont(QFont("Courier"));
 
     connect(ui->file_new,SIGNAL(triggered()),this,SLOT(fileNew()));
     connect(ui->file_open,SIGNAL(triggered()),this,SLOT(fileOpen()));
     connect(ui->file_save,SIGNAL(triggered()),this,SLOT(fileSave()));
     connect(ui->file_save_as,SIGNAL(triggered()),this,SLOT(fileSaveAs()));
     connect(ui->file_print,SIGNAL(triggered()),this,SLOT(filePrint()));
+    connect(ui->editor_options,SIGNAL(triggered()),options,SLOT(show()));
 
+    connect(ui->plainTextEdit,SIGNAL(textChanged()),this,SLOT(reload_web_view()));
 
 }
 
@@ -54,7 +63,7 @@ void MainWindow::fileNew()
         //wordCountLabel->setToolTip("");
         ui->plainTextEdit->clear();
        //ui->plainTextEdit->resetHighlighting();
-        ui->webView->setHtml(QString());
+        //ui->webView->setHtml(QString());
         //ui->htmlSourceTextEdit->clear();
         setFileName(QString());
     }
@@ -132,6 +141,13 @@ bool MainWindow::load(const QString &fileName)
 
     return true;
 }
+
+void MainWindow::reload_web_view()
+{
+    ui->webView->load(QUrl("file:///D://result.html"));
+}
+
+
 void MainWindow::setFileName(const QString &fileName)
 {
     this->fileName = fileName;
@@ -173,7 +189,5 @@ bool MainWindow::maybeSave()
 
     return true;
 }
-
-
 
 

@@ -1,6 +1,8 @@
 #include <QtGui>
 
- #include "mdeditor.h"
+#include "mdeditor.h"
+#include "writecontenttofile.h"
+#include "QThread"
 
 
  MdEditor::MdEditor(QWidget *parent) : QPlainTextEdit(parent)
@@ -10,6 +12,7 @@
      connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
      connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
      connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
+     //connect(this, SIGNAL(textChanged()), this, SLOT(save()));
 
      updateLineNumberAreaWidth(0);
      highlightCurrentLine();
@@ -51,6 +54,13 @@
          updateLineNumberAreaWidth(0);
  }
 
+ void MdEditor::save()
+ {
+    WriteContentToFile *new_thread = new WriteContentToFile();
+    new_thread->text = this->toPlainText();
+    new_thread->start();
+
+ }
 
 
  void MdEditor::resizeEvent(QResizeEvent *e)
@@ -60,6 +70,7 @@
      QRect cr = contentsRect();
      lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
  }
+
 
 
 

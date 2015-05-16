@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QPlainTextEdit>
+#include <QTextDocumentWriter>
 
+#include "options.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,16 +31,24 @@ private slots:
     bool fileSaveAs();
     void filePrint();
     bool load(const QString &fileName);
+    void reload_web_view();
+
+
+
 
 private:
 
     bool maybeSave();
     void setFileName(const QString &fileName);
 
+    //void init_app();
+
 
     Ui::MainWindow *ui;
     QString fileName;
 
+
+    Options *options;
 
 };
 

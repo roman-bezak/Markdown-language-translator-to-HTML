@@ -3,6 +3,8 @@
 
  #include <QPlainTextEdit>
  #include <QObject>
+ #include <QThread>
+ #include "writecontenttofile.h"
 
  class QPaintEvent;
  class QResizeEvent;
@@ -23,16 +25,24 @@
      void lineNumberAreaPaintEvent(QPaintEvent *event);
      int lineNumberAreaWidth();
 
+
  protected:
      void resizeEvent(QResizeEvent *event);
 
+
  private slots:
+
+     void save();
      void updateLineNumberAreaWidth(int newBlockCount);
      void highlightCurrentLine();
      void updateLineNumberArea(const QRect &, int);
 
+
  private:
+
      QWidget *lineNumberArea;
+
+
  };
 
 

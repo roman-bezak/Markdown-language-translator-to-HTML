@@ -15,10 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     mdeditor.cpp \
+    writecontenttofile.cpp \
+    reloadwebview.cpp \
+    options.cpp
 
 
 HEADERS  += mainwindow.h \
     mdeditor.h \
+    writecontenttofile.h \
+    reloadwebview.h \
+    options.h
 
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    options.ui

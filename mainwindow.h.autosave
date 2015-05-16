@@ -35,7 +35,8 @@ private slots:
     void reload_web_view();
 
     void set_options(QFont font);
-
+    void export_to_HTML();
+   // void export_to_PDF();
 
 
 

@@ -18,21 +18,22 @@ public:
     ~Options();
 
     QFont font;
-    int font_size;
-
-//private slots:
-
-//    void clear_options();
-
-//signals:
-
-    //void change_options();
-
-
     Ui::Options *ui;
 
+    void closeEvent(QCloseEvent *e) Q_DECL_OVERRIDE;
+
+signals:
+
+    void change_options(QFont);
+
+public:
 
 
+
+
+private slots:
+    void on_buttonBox_rejected();
+    void on_buttonBox_accepted();
 };
 
 #endif // OPTIONS_H

@@ -162,6 +162,11 @@ void MainWindow::set_options(QFont font)
 {
     ui->plainTextEdit->setFont(font);
 }
+
+void MainWindow::export_to_HTML()
+{
+    //
+}
 void MainWindow::setFileName(const QString &fileName)
 {
     this->fileName = fileName;

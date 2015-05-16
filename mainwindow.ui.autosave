@@ -113,8 +113,8 @@
     <addaction name="file_save"/>
     <addaction name="file_save_as"/>
     <addaction name="separator"/>
-    <addaction name="action_HTML"/>
-    <addaction name="action_PDF"/>
+    <addaction name="file_in_HTML"/>
+    <addaction name="file_in_PDF"/>
     <addaction name="separator"/>
     <addaction name="file_print"/>
     <addaction name="separator"/>
@@ -215,12 +215,12 @@
     <string>Настройки</string>
    </property>
   </action>
-  <action name="action_HTML">
+  <action name="file_in_HTML">
    <property name="text">
     <string>Экспотр в HTML...</string>
    </property>
   </action>
-  <action name="action_PDF">
+  <action name="file_in_PDF">
    <property name="text">
     <string>Экспорт в PDF...</string>
    </property>

@@ -11,12 +11,18 @@ class WriteContentToFile: public QThread
 
 public:
 
-    WriteContentToFile();
+    QString file_path;
+
+    WriteContentToFile(QString path)
+    {
+       file_path = path;
+    }
+
     QString text;
 
     void run()
     {
-            QFile file("file.txt");
+            QFile file(file_path + "/bin/fromplaintext");
             file.open(QIODevice::WriteOnly);
             QTextStream out(&file);
             out << text;

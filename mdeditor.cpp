@@ -12,7 +12,7 @@
      connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
      connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
      connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
-     //connect(this, SIGNAL(textChanged()), this, SLOT(save()));
+     connect(this, SIGNAL(textChanged()), this, SLOT(save()));
 
      updateLineNumberAreaWidth(0);
      highlightCurrentLine();
@@ -32,6 +32,40 @@
      int space = 10 + fontMetrics().width(QLatin1Char('9')) * digits;
 
      return space;
+ }
+
+ int MdEditor::countWords() const
+ {
+     QString text = toPlainText();
+
+     // empty or only whitespaces?
+     if (text.trimmed().isEmpty()) {
+         return 0;
+     }
+
+     int words = 0;
+     bool lastWasWhitespace = false;
+     bool firstCharacter = false;
+
+     for (int i = 0; i < text.count(); ++i) {
+         if (text.at(i).isSpace()) {
+             if (firstCharacter && !lastWasWhitespace) {
+                 words++;
+             }
+             lastWasWhitespace = true;
+         }
+         else
+         {
+             firstCharacter = true;
+             lastWasWhitespace = false;
+         }
+     }
+
+     if (!lastWasWhitespace && text.count() > 0) {
+         words++;
+     }
+
+     return words;
  }
 
 
@@ -56,7 +90,7 @@
 
  void MdEditor::save()
  {
-    WriteContentToFile *new_thread = new WriteContentToFile();
+    WriteContentToFile *new_thread = new WriteContentToFile(QCoreApplication::applicationDirPath());
     new_thread->text = this->toPlainText();
     new_thread->start();
 

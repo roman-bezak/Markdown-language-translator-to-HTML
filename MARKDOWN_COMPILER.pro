@@ -15,17 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     mdeditor.cpp \
-    writecontenttofile.cpp \
-    reloadwebview.cpp \
-    options.cpp
+    options.cpp \
+    exportpdfdialog.cpp
 
 
 HEADERS  += mainwindow.h \
     mdeditor.h \
     writecontenttofile.h \
-    reloadwebview.h \
-    options.h
+    options.h \
+    exportpdfdialog.h
 
 
 FORMS    += mainwindow.ui \
-    options.ui
+    options.ui \
+    exportpdfdialog.ui

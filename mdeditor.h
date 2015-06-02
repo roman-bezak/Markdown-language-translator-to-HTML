@@ -24,7 +24,7 @@
 
      void lineNumberAreaPaintEvent(QPaintEvent *event);
      int lineNumberAreaWidth();
-
+     int countWords() const;
 
  protected:
      void resizeEvent(QResizeEvent *event);

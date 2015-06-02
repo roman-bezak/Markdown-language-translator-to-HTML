@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "reloadwebview.h"
+#include "exportpdfdialog.h"
+
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -16,6 +17,7 @@
 #include <QPrintPreviewDialog>
 #include <QProcess>
 #include <QUrl>
+#include <QTimer>
 
 
 
@@ -29,15 +31,36 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow()
-{
+{ 
     delete ui;
 }
 
 
 void MainWindow::init_app()
 {
+    ui->pravka_otmenit->setIcon(QIcon(QCoreApplication::applicationDirPath()+"/icons/main_icon.png"));
 
-    ui->webView->load(QUrl("file:///D://result.html"));
+    wordCountLabel = new QLabel(this);
+    wordCountLabel->setAlignment(Qt::AlignCenter);
+    wordCountLabel->setText("0 words");
+
+
+    ui->statusBar->addPermanentWidget(wordCountLabel,2);
+
+
+    translator = new QProcess();
+    QStringList arguments;
+    arguments << QCoreApplication::applicationDirPath() + "/bin/fromplaintext" << QCoreApplication::applicationDirPath() + "/bin/resulthtml.html";
+    translator -> start( QCoreApplication::applicationDirPath() + "/md_translator.exe", arguments );
+
+
+
+
+    ui->webView->load(QUrl("file:///" + QCoreApplication::applicationDirPath() + "/bin/resulthtml.html"));
+
+
+
+
 
     connect(ui->file_new,SIGNAL(triggered()),this,SLOT(fileNew()));
     connect(ui->file_open,SIGNAL(triggered()),this,SLOT(fileOpen()));
@@ -47,12 +70,24 @@ void MainWindow::init_app()
     connect(ui->editor_options,SIGNAL(triggered()),options,SLOT(show()));
     connect(ui->plainTextEdit,SIGNAL(textChanged()),this,SLOT(reload_web_view()));
     connect(options,SIGNAL(change_options(QFont)),this,SLOT(set_options(QFont)));
+    connect(ui->vid_fullscrean,SIGNAL(changed()),this,SLOT(set_full_screan()));
+    connect(ui->file_in_PDF,SIGNAL(triggered()),this,SLOT(export_to_PDF()));
+    connect(ui->file_in_HTML,SIGNAL(triggered()),this,SLOT(export_to_HTML()));
+    connect(ui->pravka_otmenit,SIGNAL(triggered()),this,SLOT(editUndo()));
+    connect(ui->pravka_povtorit,SIGNAL(triggered()),this,SLOT(editRedo()));
+    connect(ui->plainTextEdit,SIGNAL(textChanged()),this,SLOT(update_words_counter()));
 
 
-    //plain_text
+
+    //plain_text default
     ui->plainTextEdit->setFont(QFont("MS Shell Dlg 2",10));
 
+}
 
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    delete translator;
+    e->accept();
 }
 
 
@@ -71,12 +106,9 @@ void MainWindow::fileNew()
 {
     if (maybeSave())
     {
-        //wordCountLabel->setText("");
-        //wordCountLabel->setToolTip("");
+        wordCountLabel->setText("");
+        wordCountLabel->setToolTip("");
         ui->plainTextEdit->clear();
-       //ui->plainTextEdit->resetHighlighting();
-        //ui->webView->setHtml(QString());
-        //ui->htmlSourceTextEdit->clear();
         setFileName(QString());
     }
 }
@@ -153,15 +185,71 @@ bool MainWindow::load(const QString &fileName)
 
     return true;
 }
+
+void MainWindow::editUndo()
+{
+    if (ui->plainTextEdit->document()->isUndoAvailable()) {
+        ui->plainTextEdit->document()->undo();
+    }
+}
+
+void MainWindow::editRedo()
+{
+    if (ui->plainTextEdit->document()->isRedoAvailable()) {
+        ui->plainTextEdit->document()->redo();
+    }
+}
 void MainWindow::reload_web_view()
 {
-    ui->webView->load(QUrl("file:///D://result.html"));
+   //ui->webView->reload(QUrl("file:///" + QCoreApplication::applicationDirPath() + "/bin/resulthtml.html"));
+    emit ui->webView->reload();
+
+}
+
+void MainWindow::set_full_screan()
+{
+    if (ui->vid_fullscrean->isChecked()) {
+        showFullScreen();
+    } else {
+        showNormal();
+    }
+}
+
+void MainWindow::update_words_counter()
+{
+    if (wordCountLabel)
+    {
+        int words = ui->plainTextEdit->countWords();
+        int lines = ui->plainTextEdit->document()->lineCount();
+        int chars = ui->plainTextEdit->document()->characterCount();
+        wordCountLabel->setText(tr("%1 words").arg(words));
+        wordCountLabel->setToolTip(tr("Lines: %1  Words: %2  Characters: %3").arg(lines).arg(words).arg(chars));
+    }
 }
 
 void MainWindow::set_options(QFont font)
 {
     ui->plainTextEdit->setFont(font);
 }
+
+void MainWindow::export_to_HTML()
+{
+    QString name = QFileDialog::getSaveFileName(this, tr("Сохранить"), QString(),
+                                              tr("HTML files (*.html *.htm);;All Files (*)"));
+
+    QFile::copy(QCoreApplication::applicationDirPath() + "/bin/resulthtml.html",name);
+
+}
+
+void MainWindow::export_to_PDF()
+{
+    ExportPdfDialog dialog(fileName);
+    if (dialog.exec() == QDialog::Accepted) {
+        ui->webView->print(dialog.printer());
+    }
+}
+
+
 void MainWindow::setFileName(const QString &fileName)
 {
     this->fileName = fileName;
@@ -189,10 +277,10 @@ bool MainWindow::maybeSave()
 
     QMessageBox::StandardButton ret;
 
-    ret = QMessageBox::warning(this, tr("Save Changes"),
+    ret = QMessageBox::warning(this, tr("Сохранение изменений"),
 
-                               tr("The document has been modified.<br>"
-                                  "Do you want to save your changes?"),
+                               tr("Этот документ был изменён.<br>"
+                                  "Хотите сохранить свои изменения?"),
 
                                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 

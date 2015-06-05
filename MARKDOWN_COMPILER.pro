@@ -21,7 +21,6 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     mdeditor.h \
-    writecontenttofile.h \
     options.h \
     exportpdfdialog.h
 
